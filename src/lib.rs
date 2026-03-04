@@ -235,7 +235,8 @@ impl PowStore {
 
         // Generate next round — use the solution hash as part of the next salt
         // This creates a dependency chain: you can't pre-compute round N+1 without solving round N
-        let solution_hash = challenge::sha256_hex(&format!("{}{}", chain.current_prefix, nonce_hex));
+        let solution_hash =
+            challenge::sha256_hex(&format!("{}{}", chain.current_prefix, nonce_hex));
         let next_prefix = build_round_prefix(&chain.binding, &solution_hash[..32], next_round);
 
         chain.current_round = next_round;
@@ -281,7 +282,7 @@ mod tests {
     fn test_full_chain_success() {
         let config = PowConfig {
             rounds: 2,
-            difficulty: 4, // low for tests
+            difficulty: 4,   // low for tests
             min_round_ms: 0, // disable timing check for unit test
             max_chain_secs: 60,
             max_round_secs: 30,
@@ -293,14 +294,20 @@ mod tests {
         let nonce0 = brute_force_nonce(&chain.current_prefix, chain.difficulty);
         let result = store.submit_round(&chain.chain_id, &nonce0);
         let (prefix1, diff1) = match result {
-            RoundResult::NextRound { prefix, difficulty, .. } => (prefix, difficulty),
+            RoundResult::NextRound {
+                prefix, difficulty, ..
+            } => (prefix, difficulty),
             other => panic!("expected NextRound, got {:?}", other),
         };
 
         // Solve round 1
         let nonce1 = brute_force_nonce(&prefix1, diff1);
         let result = store.submit_round(&chain.chain_id, &nonce1);
-        assert!(matches!(result, RoundResult::Complete), "expected Complete, got {:?}", result);
+        assert!(
+            matches!(result, RoundResult::Complete),
+            "expected Complete, got {:?}",
+            result
+        );
     }
 
     #[test]

@@ -13,9 +13,13 @@ pub fn random_hex(byte_count: usize) -> String {
 
 /// Build an HMAC-SHA256 binding token from the server secret + contextual data.
 /// This binds a challenge to a specific client context (IP, User-Agent, etc).
-pub fn compute_binding(server_secret: &[u8], ip: &str, user_agent: &str, session_nonce: &str) -> String {
-    let mut mac = HmacSha256::new_from_slice(server_secret)
-        .expect("HMAC accepts any key length");
+pub fn compute_binding(
+    server_secret: &[u8],
+    ip: &str,
+    user_agent: &str,
+    session_nonce: &str,
+) -> String {
+    let mut mac = HmacSha256::new_from_slice(server_secret).expect("HMAC accepts any key length");
     mac.update(ip.as_bytes());
     mac.update(b"|");
     mac.update(user_agent.as_bytes());
@@ -128,7 +132,11 @@ mod tests {
         let prefix = build_round_prefix(&binding, &salt, 0);
         // binding=64 hex + ":" + salt=32 hex + ":0:" = 64+1+32+2 = 99 chars
         // Plus nonce (at least 1 char) = 100+ bytes > 64 byte block boundary
-        assert!(prefix.len() > 55, "prefix must force double-block: len={}", prefix.len());
+        assert!(
+            prefix.len() > 55,
+            "prefix must force double-block: len={}",
+            prefix.len()
+        );
     }
 
     #[test]
