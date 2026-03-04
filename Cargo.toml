@@ -3,7 +3,9 @@ name = "pow"
 version = "0.1.0"
 edition = "2024"
 description = "Multi-round, timing-validated, binding-aware Proof-of-Work challenge system"
+authors = ["Sriram <marirs@tgmail.com>"]
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/torq-x/PoW"
 
 [dependencies]
 sha2 = "0.10"
